@@ -60,18 +60,29 @@ class EncryptedBlob:
         # IF IT DOESN'T DECRYPT, YOU NEED TO RAISE A 
         # FailedDecryptionError EXCEPTION
 
+
+
         # TODO: hint: in encryptThenMAC, I padded the plaintext.  You'll
         # need to unpad it.
         # See https://pycryptodome.readthedocs.io/en/v3.11.0/src/util/util.html#crypto-util-padding-module
 
         # so, this next line is definitely wrong.  :)
-        self.plaintext = "It's a wonderful day in the neighborhood."
+    
         
         # TODO: DON'T FORGET TO VERIFY THE MAC!!!
         # IF IT DOESN'T VERIFY, YOU NEED TO RAISE A
         # FailedAuthenticationError EXCEPTION
 
-        raise imexceptions.FailedAuthenticationError("ruh oh!")
+        hmac = HMAC.new(authkey, digestmod=SHA256)
+        hmac.update(ciphertext)
+
+        try:
+            hmac.verify(mac)
+        
+        except ValueError:
+            raise imexceptions.FailedAuthenticationError("ruh oh! The MAC was not verified!!!")
+        
+        cipher = AES.new(confkey, AES.MODE_CBC, iv)
         
 
         return self.plaintext
