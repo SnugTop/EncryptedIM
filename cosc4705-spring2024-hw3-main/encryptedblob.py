@@ -28,8 +28,9 @@ class EncryptedBlob:
 
     def encryptThenMAC(self,confkey,authkey,plaintext):
 
-        
-
+        #I am just trying to pass the test cases in test_encryption but exceptions are not seeming to work.
+        if confkey is None or authkey is None:
+            raise ValueError("confkey and authkey cannot be None!")  
 
         iv = get_random_bytes(AES.block_size)
         cipher = AES.new(confkey, AES.MODE_CBC, iv)
@@ -53,9 +54,6 @@ class EncryptedBlob:
 
 
     def decryptAndVerify(self,confkey,authkey,ivBase64,ciphertextBase64,macBase64):
-        iv = base64.b64decode(ivBase64)
-        ciphertext = base64.b64decode(ciphertextBase64)
-        mac = base64.b64decode(macBase64)
 
         # TODO: MODIFY THE CODE BELOW TO ACTUALLY DECRYPT
         # IF IT DOESN'T DECRYPT, YOU NEED TO RAISE A 
@@ -68,7 +66,11 @@ class EncryptedBlob:
         # TODO: DON'T FORGET TO VERIFY THE MAC!!!
         # IF IT DOESN'T VERIFY, YOU NEED TO RAISE A
         # FailedAuthenticationError EXCEPTION
-        
+
+
+        #I am just trying to pass the test cases in test_encryption but exceptions are not seeming to work.
+        if confkey is None or authkey is None:
+            raise ValueError("confkey and authkey cannot be None!")        
 
         iv = base64.b64decode(ivBase64)
         ciphertext = base64.b64decode(ciphertextBase64)
