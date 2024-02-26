@@ -28,19 +28,17 @@ class EncryptedBlob:
 
     def encryptThenMAC(self,confkey,authkey,plaintext):
 
-        confkey_Hash = SHA256.new(confkey.encode('utf-8')).digest()
-        authkey_Hash = SHA256.new(authkey.encode('utf-8')).digest()
         
 
 
         iv = get_random_bytes(AES.block_size)
-        cipher = AES.new(confkey_Hash, AES.MODE_CBC, iv)
+        cipher = AES.new(confkey, AES.MODE_CBC, iv)
 
         # pad the plaintext to make AES happy
         plaintextPadded = pad(plaintext.encode('utf-8'), AES.block_size)
         ciphertext = cipher.encrypt(plaintextPadded)  
 
-        hmac = HMAC.new(authkey_Hash, digestmod=SHA256)
+        hmac = HMAC.new(authkey, digestmod=SHA256)
         hmac.update(ciphertext)
         mac = hmac.digest()
 
@@ -76,10 +74,8 @@ class EncryptedBlob:
         ciphertext = base64.b64decode(ciphertextBase64)
         mac = base64.b64decode(macBase64)
 
-        confkey_Hash = SHA256.new(confkey.encode('utf-8')).digest()
-        authkey_Hash = SHA256.new(authkey.encode('utf-8')).digest()
 
-        hmac = HMAC.new(authkey_Hash, digestmod=SHA256)
+        hmac = HMAC.new(authkey, digestmod=SHA256)
         hmac.update(ciphertext)
 
         try:
@@ -88,7 +84,7 @@ class EncryptedBlob:
         except ValueError:
             raise imexceptions.FailedAuthenticationError("ruh oh! The MAC was not verified!!!")
         
-        cipher = AES.new(confkey_Hash, AES.MODE_CBC, iv)
+        cipher = AES.new(confkey, AES.MODE_CBC, iv)
         plaintextPadded = cipher.decrypt(ciphertext)
 
         try:
