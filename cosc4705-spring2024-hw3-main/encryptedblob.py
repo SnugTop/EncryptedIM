@@ -20,12 +20,17 @@ class EncryptedBlob:
 
 
 
-    # encrypts the plaintext and adds a SHA256-based HMAC
-    # using an encrypt-then-MAC solution
-    def encryptThenMAC(self,confkey,authkey,plaintext):
+        # encrypts the plaintext and adds a SHA256-based HMAC
+        # using an encrypt-then-MAC solution
         # TODO: MODIFY THE CODE BELOW TO ACTUALLY ENCRYPT 
         # AND GENERATE A SHA256-BASED HMAC BASED ON THE 
         # confkey AND authkey
+
+    def encryptThenMAC(self,confkey,authkey,plaintext):
+
+        #I am just trying to pass the test cases in test_encryption but exceptions are not seeming to work.
+        if confkey is None or authkey is None:
+            raise ValueError("confkey and authkey cannot be None!")  
 
         iv = get_random_bytes(AES.block_size)
         cipher = AES.new(confkey, AES.MODE_CBC, iv)
@@ -49,9 +54,6 @@ class EncryptedBlob:
 
 
     def decryptAndVerify(self,confkey,authkey,ivBase64,ciphertextBase64,macBase64):
-        iv = base64.b64decode(ivBase64)
-        ciphertext = base64.b64decode(ciphertextBase64)
-        mac = base64.b64decode(macBase64)
 
         # TODO: MODIFY THE CODE BELOW TO ACTUALLY DECRYPT
         # IF IT DOESN'T DECRYPT, YOU NEED TO RAISE A 
@@ -64,6 +66,16 @@ class EncryptedBlob:
         # TODO: DON'T FORGET TO VERIFY THE MAC!!!
         # IF IT DOESN'T VERIFY, YOU NEED TO RAISE A
         # FailedAuthenticationError EXCEPTION
+
+
+        #I am just trying to pass the test cases in test_encryption but exceptions are not seeming to work.
+        if confkey is None or authkey is None:
+            raise ValueError("confkey and authkey cannot be None!")        
+
+        iv = base64.b64decode(ivBase64)
+        ciphertext = base64.b64decode(ciphertextBase64)
+        mac = base64.b64decode(macBase64)
+
 
         hmac = HMAC.new(authkey, digestmod=SHA256)
         hmac.update(ciphertext)
@@ -78,11 +90,11 @@ class EncryptedBlob:
         plaintextPadded = cipher.decrypt(ciphertext)
 
         try:
-            self.plaintext = unpad(plaintextPadded, AES.block_size).decode('utf-8')
+            plaintext = unpad(plaintextPadded, AES.block_size).decode('utf-8')
 
         except ValueError:
             raise imexceptions.FailedDecryptionError("ruh oh! This was not decrypted!!!")
 
         
-
+        self.plaintext = plaintext 
         return self.plaintext
