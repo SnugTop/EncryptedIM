@@ -20,24 +20,27 @@ class EncryptedBlob:
 
 
 
-    # encrypts the plaintext and adds a SHA256-based HMAC
-    # using an encrypt-then-MAC solution
-    def encryptThenMAC(self,confkey,authkey,plaintext):
+        # encrypts the plaintext and adds a SHA256-based HMAC
+        # using an encrypt-then-MAC solution
         # TODO: MODIFY THE CODE BELOW TO ACTUALLY ENCRYPT 
         # AND GENERATE A SHA256-BASED HMAC BASED ON THE 
         # confkey AND authkey
 
-        if
+    def encryptThenMAC(self,confkey,authkey,plaintext):
+
+        confkey_Hash = SHA256.new(confkey.encode('utf-8')).digest()
+        authkey_Hash = SHA256.new(authkey.encode('utf-8')).digest()
+        
 
 
         iv = get_random_bytes(AES.block_size)
-        cipher = AES.new(confkey, AES.MODE_CBC, iv)
+        cipher = AES.new(confkey_Hash, AES.MODE_CBC, iv)
 
         # pad the plaintext to make AES happy
         plaintextPadded = pad(plaintext.encode('utf-8'), AES.block_size)
         ciphertext = cipher.encrypt(plaintextPadded)  
 
-        hmac = HMAC.new(authkey, digestmod=SHA256)
+        hmac = HMAC.new(authkey_Hash, digestmod=SHA256)
         hmac.update(ciphertext)
         mac = hmac.digest()
 
@@ -67,16 +70,16 @@ class EncryptedBlob:
         # TODO: DON'T FORGET TO VERIFY THE MAC!!!
         # IF IT DOESN'T VERIFY, YOU NEED TO RAISE A
         # FailedAuthenticationError EXCEPTION
-        if confkey is None or len(confkey) not in [16,24,32]:
-            raise ValueError("Ruh oh! The confKey is not the right Length!")
-        if authkey is None or len(authkey) not in [16,24,32]:
-            raise ValueError("Ruh oh! The authKey is not the right Length!")
+        
 
         iv = base64.b64decode(ivBase64)
         ciphertext = base64.b64decode(ciphertextBase64)
         mac = base64.b64decode(macBase64)
 
-        hmac = HMAC.new(authkey, digestmod=SHA256)
+        confkey_Hash = SHA256.new(confkey.encode('utf-8')).digest()
+        authkey_Hash = SHA256.new(authkey.encode('utf-8')).digest()
+
+        hmac = HMAC.new(authkey_Hash, digestmod=SHA256)
         hmac.update(ciphertext)
 
         try:
@@ -85,15 +88,15 @@ class EncryptedBlob:
         except ValueError:
             raise imexceptions.FailedAuthenticationError("ruh oh! The MAC was not verified!!!")
         
-        cipher = AES.new(confkey, AES.MODE_CBC, iv)
+        cipher = AES.new(confkey_Hash, AES.MODE_CBC, iv)
         plaintextPadded = cipher.decrypt(ciphertext)
 
         try:
-            self.plaintext = unpad(plaintextPadded, AES.block_size).decode('utf-8')
+            plaintext = unpad(plaintextPadded, AES.block_size).decode('utf-8')
 
         except ValueError:
             raise imexceptions.FailedDecryptionError("ruh oh! This was not decrypted!!!")
 
         
-
+        self.plaintext = plaintext 
         return self.plaintext
