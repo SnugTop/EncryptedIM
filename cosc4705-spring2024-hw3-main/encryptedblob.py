@@ -19,7 +19,6 @@ class EncryptedBlob:
             self.ivBase64, self.ciphertextBase64, self.macBase64 = self.encryptThenMAC(confkey, authkey, plaintext)
 
 
-
         # encrypts the plaintext and adds a SHA256-based HMAC
         # using an encrypt-then-MAC solution
         # TODO: MODIFY THE CODE BELOW TO ACTUALLY ENCRYPT 
@@ -43,10 +42,6 @@ class EncryptedBlob:
         hmac.update(ciphertext)
         mac = hmac.digest()
 
-        # DON'T CHANGE THE BELOW.
-        # What we're doing here is converting the iv, ciphertext,
-        # and mac (which are all in bytes) to base64 encoding, so that it 
-        # can be part of the JSON EncryptedIM object
         ivBase64 = base64.b64encode(iv).decode("utf-8") 
         ciphertextBase64 = base64.b64encode(ciphertext).decode("utf-8") 
         macBase64 = base64.b64encode(mac).decode("utf-8") 
@@ -54,19 +49,6 @@ class EncryptedBlob:
 
 
     def decryptAndVerify(self,confkey,authkey,ivBase64,ciphertextBase64,macBase64):
-
-        # TODO: MODIFY THE CODE BELOW TO ACTUALLY DECRYPT
-        # IF IT DOESN'T DECRYPT, YOU NEED TO RAISE A 
-        # FailedDecryptionError EXCEPTION
-        # TODO: hint: in encryptThenMAC, I padded the plaintext.  You'll
-        # need to unpad it.
-        # See https://pycryptodome.readthedocs.io/en/v3.11.0/src/util/util.html#crypto-util-padding-module
-        #self.plaintext = "THIS IS WRONG!"
-        # so, this next line is definitely wrong.  :)
-        # TODO: DON'T FORGET TO VERIFY THE MAC!!!
-        # IF IT DOESN'T VERIFY, YOU NEED TO RAISE A
-        # FailedAuthenticationError EXCEPTION
-
 
         #I am just trying to pass the test cases in test_encryption but exceptions are not seeming to work.
         if confkey is None or authkey is None:
