@@ -27,19 +27,16 @@ class EncryptedBlob:
         # AND GENERATE A SHA256-BASED HMAC BASED ON THE 
         # confkey AND authkey
 
+        iv = get_random_bytes(AES.block_size)
         cipher = AES.new(confkey, AES.MODE_CBC, iv)
 
         # pad the plaintext to make AES happy
         plaintextPadded = pad(plaintext.encode('utf-8'), AES.block_size)
         ciphertext = cipher.encrypt(plaintextPadded)  
-        iv = get_random_bytes(AES.block_size)
 
         hmac = HMAC.new(authkey, digestmod=SHA256)
         hmac.update(ciphertext)
         mac = hmac.digest()
-
-
-        mac = bytes([0x00, 0x00, 0x00, 0x00]) # and this too!
 
         # DON'T CHANGE THE BELOW.
         # What we're doing here is converting the iv, ciphertext,
