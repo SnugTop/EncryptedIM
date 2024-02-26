@@ -1,6 +1,8 @@
 import base64
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Cipher import AES
+from Crypto.Hash import HMAC, SHA256
+from Crypto.Random import get_random_bytes
 import imexceptions
 
 
@@ -25,10 +27,18 @@ class EncryptedBlob:
         # AND GENERATE A SHA256-BASED HMAC BASED ON THE 
         # confkey AND authkey
 
+        cipher = AES.new(confkey, AES.MODE_CBC, iv)
+
         # pad the plaintext to make AES happy
-        plaintextPadded = pad(bytes(plaintext,'utf-8'),16) 
-        ciphertext = plaintextPadded  # definitely change this. :)
-        iv = bytes([0x00, 0x00, 0x00, 0x00])  # and this too!
+        plaintextPadded = pad(plaintext.encode('utf-8'), AES.block_size)
+        ciphertext = cipher.encrypt(plaintextPadded)  
+        iv = get_random_bytes(AES.block_size)
+
+        hmac = HMAC.new(authkey, digestmod=SHA256)
+        hmac.update(ciphertext)
+        mac = hmac.digest()
+
+
         mac = bytes([0x00, 0x00, 0x00, 0x00]) # and this too!
 
         # DON'T CHANGE THE BELOW.
