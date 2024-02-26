@@ -27,6 +27,9 @@ class EncryptedBlob:
         # AND GENERATE A SHA256-BASED HMAC BASED ON THE 
         # confkey AND authkey
 
+        if
+
+
         iv = get_random_bytes(AES.block_size)
         cipher = AES.new(confkey, AES.MODE_CBC, iv)
 
@@ -64,6 +67,14 @@ class EncryptedBlob:
         # TODO: DON'T FORGET TO VERIFY THE MAC!!!
         # IF IT DOESN'T VERIFY, YOU NEED TO RAISE A
         # FailedAuthenticationError EXCEPTION
+        if confkey is None or len(confkey) not in [16,24,32]:
+            raise ValueError("Ruh oh! The confKey is not the right Length!")
+        if authkey is None or len(authkey) not in [16,24,32]:
+            raise ValueError("Ruh oh! The authKey is not the right Length!")
+
+        iv = base64.b64decode(ivBase64)
+        ciphertext = base64.b64decode(ciphertextBase64)
+        mac = base64.b64decode(macBase64)
 
         hmac = HMAC.new(authkey, digestmod=SHA256)
         hmac.update(ciphertext)
