@@ -65,10 +65,8 @@ class EncryptedBlob:
         # TODO: hint: in encryptThenMAC, I padded the plaintext.  You'll
         # need to unpad it.
         # See https://pycryptodome.readthedocs.io/en/v3.11.0/src/util/util.html#crypto-util-padding-module
-
+        self.plaintext = "THIS IS WRONG!"
         # so, this next line is definitely wrong.  :)
-    
-        
         # TODO: DON'T FORGET TO VERIFY THE MAC!!!
         # IF IT DOESN'T VERIFY, YOU NEED TO RAISE A
         # FailedAuthenticationError EXCEPTION
@@ -83,6 +81,7 @@ class EncryptedBlob:
             raise imexceptions.FailedAuthenticationError("ruh oh! The MAC was not verified!!!")
         
         cipher = AES.new(confkey, AES.MODE_CBC, iv)
+
         
 
         return self.plaintext
