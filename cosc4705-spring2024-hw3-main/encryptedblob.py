@@ -55,17 +55,14 @@ class EncryptedBlob:
         iv = base64.b64decode(ivBase64)
         ciphertext = base64.b64decode(ciphertextBase64)
         mac = base64.b64decode(macBase64)
-        
+
         # TODO: MODIFY THE CODE BELOW TO ACTUALLY DECRYPT
         # IF IT DOESN'T DECRYPT, YOU NEED TO RAISE A 
         # FailedDecryptionError EXCEPTION
-
-
-
         # TODO: hint: in encryptThenMAC, I padded the plaintext.  You'll
         # need to unpad it.
         # See https://pycryptodome.readthedocs.io/en/v3.11.0/src/util/util.html#crypto-util-padding-module
-        self.plaintext = "THIS IS WRONG!"
+        #self.plaintext = "THIS IS WRONG!"
         # so, this next line is definitely wrong.  :)
         # TODO: DON'T FORGET TO VERIFY THE MAC!!!
         # IF IT DOESN'T VERIFY, YOU NEED TO RAISE A
@@ -81,6 +78,13 @@ class EncryptedBlob:
             raise imexceptions.FailedAuthenticationError("ruh oh! The MAC was not verified!!!")
         
         cipher = AES.new(confkey, AES.MODE_CBC, iv)
+        plaintextPadded = cipher.decrypt(ciphertext)
+
+        try:
+            self.plaintext = unpad(plaintextPadded, AES.block_size).decode('utf-8')
+
+        except ValueError:
+            raise imexceptions.FailedDecryptionError("ruh oh! This was not decrypted!!!")
 
         
 
