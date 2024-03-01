@@ -27,6 +27,9 @@ class EncryptedBlob:
         iv = get_random_bytes(AES.block_size)
         cipher = AES.new(confkey, AES.MODE_CBC, iv)
 
+        # I changed this to AESs blcok size to kind of standardize it with the rest of the code and it made
+        # more sense to me as I learned more about the AES. It seemed the best way to make sure everything was correct
+        # without hardcoding values.
         plaintextPadded = pad(plaintext.encode('utf-8'), AES.block_size)
         ciphertext = cipher.encrypt(plaintextPadded)  
 
