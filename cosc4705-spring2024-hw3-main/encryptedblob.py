@@ -21,6 +21,8 @@ class EncryptedBlob:
 
     def encryptThenMAC(self,confkey,authkey,plaintext):
 
+        # I added this because I thought it was necessary to passing the test_encryption.py but I thought 
+        # it was still a good idead to keep in for best practices. 
         if confkey is None or authkey is None:
             raise ValueError("confkey and authkey cannot be None!")  
 
@@ -46,6 +48,8 @@ class EncryptedBlob:
 
     def decryptAndVerify(self,confkey,authkey,ivBase64,ciphertextBase64,macBase64):
 
+        # I added this because I thought it was necessary to passing the test_encryption.py but I thought 
+        # it was still a good idead to keep in for best practices.
         if confkey is None or authkey is None:
             raise ValueError("confkey and authkey cannot be None!")        
 
