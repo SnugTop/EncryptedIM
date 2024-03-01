@@ -19,12 +19,6 @@ class EncryptedBlob:
             self.ivBase64, self.ciphertextBase64, self.macBase64 = self.encryptThenMAC(confkey, authkey, plaintext)
 
 
-        # encrypts the plaintext and adds a SHA256-based HMAC
-        # using an encrypt-then-MAC solution
-        # TODO: MODIFY THE CODE BELOW TO ACTUALLY ENCRYPT 
-        # AND GENERATE A SHA256-BASED HMAC BASED ON THE 
-        # confkey AND authkey
-
     def encryptThenMAC(self,confkey,authkey,plaintext):
 
         if confkey is None or authkey is None:
@@ -43,6 +37,7 @@ class EncryptedBlob:
         ivBase64 = base64.b64encode(iv).decode("utf-8") 
         ciphertextBase64 = base64.b64encode(ciphertext).decode("utf-8") 
         macBase64 = base64.b64encode(mac).decode("utf-8") 
+        
         return ivBase64, ciphertextBase64, macBase64
 
 
